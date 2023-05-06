@@ -1,17 +1,16 @@
 grammar logo_grammar;
 
 program
-	: (instrukcja? koniec_wiersza+)+ instrukcja? koniec_pliku
+	: (instrukcja? KONIEC_WIERSZA+)+ instrukcja? EOF
     ;
 
 instrukcja
-	: polecenie komentarz?
-	| komentarz
+	: polecenie KOMENTARZ?
+	| KOMENTARZ
 	;
 
 polecenie
-	: repeat
-	| ruch
+	: ruch
 	| ('cs' | 'clearscreen')
 	| ('pu' | 'penup')
 	| ('pd' | 'pendown')
@@ -21,7 +20,7 @@ polecenie
 	| 'setxy' wyrazenie wyrazenie
 	| 'setpensize' wyrazenie
 	| 'if' '(' wyrazenie_logiczne ')' blok
-	| 'repeat' liczba blok
+	| 'repeat' LICZBA blok
 	;
 
 ruch
@@ -33,26 +32,34 @@ ruch
 	;
 
 blok
-	: koniec_wiersza* '{' instrukcja+ '}' koniec_wiersza*
+	: KONIEC_WIERSZA* '{' instrukcja+ '}' KONIEC_WIERSZA*
 	;
 
-liczba
-	: [0-9] +
+LICZBA
+	: [0-9]+
 	;
 
-komentarz
-	: '#' ~ [\r\n]*
+KOMENTARZ
+	: '#' ~[\r\n]*
 	;
 
-koniec_wiersza
+KONIEC_WIERSZA
 	: '\r'? '\n'
 	;
 
 wyrazenie_logiczne
-	: wyrazenie operator_porównania wyrazenie
+	: wyrazenie_porownania (OPERATOR_LOGICZNY wyrazenie_porownania)*
 	;
 
-operator_porownania
+wyrazenie_porownania
+	: wartosc_logiczna (OPERATOR_POROWNANIA wartosc_logiczna)?
+	;
+
+wartosc_logiczna
+	: wyrazenie
+	| '(' wyrazenie_logiczne ')'
+	;
+OPERATOR_POROWNANIA
 	: '<'
 	| '<='
 	| '>'
@@ -61,39 +68,39 @@ operator_porownania
 	| '!='
 	;
 
-operator_logiczny
+OPERATOR_LOGICZNY
 	: '||'
 	| '&&'
 	;
 
 wyrazenie
-	:  wyrazenie_mnozace (operator_arytmetyczny wyrazenie_mnozace )*
+	:  wyrazenie_mnozace (OPERATOR_ARYTMETYCZNY wyrazenie_mnozace )*
 	;
 
 wyrazenie_mnozace
-    : wartosc_liczbowa (operator_mnozacy wartosc_liczbowa)*
+    : wartosc_liczbowa (OPERATOR_MNOZACY wartosc_liczbowa)*
     ;
 
 wartosc_liczbowa
-    : operator_znaku? (liczba | '(' wyrazenie ')')
+    : OPERATOR_ZNAKU? (LICZBA | '(' wyrazenie ')')
     ;
 
-operator_znaku
+OPERATOR_ZNAKU
     : '-'
     | '+'
     ;
 
-operator_arytmetyczny
+OPERATOR_ARYTMETYCZNY
     : '-'
     | '+'
     ;
 
-operator_mnozacy
+OPERATOR_MNOZACY
     : '/'
     | '*'
     | '%'
     ;
 
 WS
-    : [ \t\r\n]+ -> skip
+    : [\t\r\n]+ -> skip
     ;
