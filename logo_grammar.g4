@@ -11,16 +11,61 @@ instrukcja
 
 polecenie
 	: ruch
-	| ('cs' | 'clearscreen')
-	| ('pu' | 'penup')
-	| ('pd' | 'pendown')
-	| ('ht' | 'hideturtle')
-	| ('st' | 'showturtle')
-	| 'home'
-	| 'setxy' wyrazenie wyrazenie
-	| 'setpensize' wyrazenie
-	| 'if' '(' wyrazenie_logiczne ')' blok
-	| 'repeat' LICZBA blok
+	| clearscreen
+	| penup
+	| pendown
+	| hideturtle
+	| showturtle
+	| home
+	| setxy 
+	| setpensize
+	| if
+	| repeat
+	;
+
+clearscreen
+	: 'cs'
+	| 'clearscreen'
+	;
+
+penup
+	: 'pu'
+	| 'penup'
+	;
+
+pendown 
+	: 'pd'
+	| 'pendown'
+	;
+
+hideturtle
+	: 'ht'
+	| 'hideturtle'
+	;
+
+showturtle
+	: 'st'
+	| 'showturtle'
+	;
+
+home 
+	: 'home'
+	;
+
+setxy
+	: 'setxy' wyrazenie wyrazenie
+	;
+
+setpensize
+	: ('setps' | 'setpensize') wyrazenie
+	;
+
+if 
+	: 'if' '(' wyrazenie_logiczne ')' blok
+	;
+
+repeat
+	: 'repeat' LICZBA blok
 	;
 
 ruch
@@ -102,5 +147,5 @@ OPERATOR_MNOZACY
     ;
 
 WS
-    : [\t\r\n]+ -> skip
+    : [ \t\r\n]+ -> skip
     ;
