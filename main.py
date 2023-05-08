@@ -24,10 +24,9 @@ if __name__ == "__main__":
     tree = parser.program()
 
         # First run
-    output = ParseTreeWalker().walk(logo_grammarListener(), tree)
+    # output = ParseTreeWalker().walk(logo_grammarListener(), tree)
     
     output = Visitor(logger).visit(tree)
 
     logger.log(f"Output: {output}")
     
-    visitor = Visitor(log = logger)

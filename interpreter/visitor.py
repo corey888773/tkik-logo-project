@@ -4,7 +4,7 @@ from dist.logo_grammarVisitor import logo_grammarVisitor
 class Visitor(logo_grammarVisitor):
     
     def __init__(self, log):
-      self.logger = log
+        self.logger = log
 
 # Visit a parse tree produced by logo_grammarParser#program.
     def visitProgram(self, ctx:logo_grammarParser.ProgramContext):
@@ -54,6 +54,7 @@ class Visitor(logo_grammarVisitor):
     # Visit a parse tree produced by logo_grammarParser#setxy.
     def visitSetxy(self, ctx:logo_grammarParser.SetxyContext):
         value_1 = self.visit(ctx.wyrazenie(0))
+        self.logger.log('\n\n\n\n')
         value_2 = self.visit(ctx.wyrazenie(1))
         self.logger.log(f"setxy {value_1} {value_2}")
         return self.visitChildren(ctx)
@@ -98,19 +99,57 @@ class Visitor(logo_grammarVisitor):
     def visitWartosc_logiczna(self, ctx:logo_grammarParser.Wartosc_logicznaContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by logo_grammarParser#wyrazenie.
     def visitWyrazenie(self, ctx:logo_grammarParser.WyrazenieContext):
-        return self.visitChildren(ctx)
+        # wyrazenie_mnozace (OPERATOR_ARYTMETYCZNY wyrazenie_mnozace )*
+        self.logger.log(f"wyrażenie {ctx.getText()} a to mój operator arytmetyczny: {ctx.OPERATOR_ARYTMETYCZNY(0)}")
+        self.logger.log(f"jestem w WYRAŻENIE przechodzę do wyrażenia mnożącego\n")
+        result = self.visit(ctx.wyrazenie_mnozace(0))
+        
+        for index, i in enumerate(ctx.OPERATOR_ARYTMETYCZNY()):
+            operator = str(i)
+            if operator == '+':
+                result = result + self.visit(ctx.wyrazenie_mnozace(index+1))
+            elif operator == '-':
+                result = result - self.visit(ctx.wyrazenie_mnozace(index+1))
+        
+        return result
 
 
     # Visit a parse tree produced by logo_grammarParser#wyrazenie_mnozace.
     def visitWyrazenie_mnozace(self, ctx:logo_grammarParser.Wyrazenie_mnozaceContext):
-        return self.visitChildren(ctx)
+        # wartosc_liczbowa (OPERATOR_MNOZACY wartosc_liczbowa)*
+        self.logger.log(f"wyrażenie mnożące {ctx.getText()} a to mój operator mnożący: {ctx.OPERATOR_MNOZACY(0)}")
+        self.logger.log("jestem w WYRAŻENIE_MNOŻĄCE przechodzę do wartosci liczbowej \n")
+        result = self.visit(ctx.wartosc_liczbowa(0))
+
+        for index, i in enumerate(ctx.OPERATOR_MNOZACY()):
+            operator = str(i)
+            if operator == '*':
+                result = result * self.visit(ctx.wartosc_liczbowa(index+1))
+            elif operator == '/':
+                if type(result) == type(1) and type(self.visit(ctx.wartosc_liczbowa(index+1))) == type(1):
+                    result = result // self.visit(ctx.wartosc_liczbowa(index+1))
+                else:
+                    result = result / self.visit(ctx.wartosc_liczbowa(index+1))
+            elif operator == '%':
+                result = result % self.visit(ctx.wartosc_liczbowa(index+1))
+        return result
 
 
     # Visit a parse tree produced by logo_grammarParser#wartosc_liczbowa.
     def visitWartosc_liczbowa(self, ctx:logo_grammarParser.Wartosc_liczbowaContext):
-        return int(ctx.getText())
-
+        #  OPERATOR_ZNAKU? (LICZBA | '(' wyrazenie ')')
+        isNegative = ctx.OPERATOR_ZNAKU() != None and ctx.getText().startswith('-')
+            
+        if ctx.wyrazenie():
+            self.logger.log(f"wartosc_liczbowa {ctx.getText()} znak ujemny: {isNegative} wyrazenie")
+            self.logger.log(("jestem w WARTOŚĆ_LICZBOWA przechodzę do wyrażenia \n"))
+            return self.visit(ctx.wyrazenie()) * (-1 if isNegative else 1)
+        else:
+            self.logger.log(f"wartosc_liczbowa {ctx.getText()} znak ujemny: {isNegative} wartosc")
+            self.logger.log(("jestem w WARTOŚĆ_LICZBOWA zwracam wartość liczbową \n"))
+            return int(ctx.getText()) * (-1 if isNegative else 1)
+        
 del logo_grammarParser
+    
