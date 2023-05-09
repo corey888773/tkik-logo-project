@@ -69,12 +69,30 @@ repeat
 	;
 
 ruch
-	: ( ('fd' | 'forward')
-    | ('bk' | 'backward')
-    | ('rt' | 'rightturn')
-    | 'lt' | 'leftturn')
-    | wyrazenie
+	: forward
+    | backward
+    | rightturn
+    | leftturn
 	;
+
+forward
+		: 'fd' wyrazenie 
+		| 'forward' wyrazenie
+		;
+
+backward
+		: 'bk' wyrazenie 
+		| 'backward' wyrazenie
+		;
+rightturn
+		: 'rt' wyrazenie 
+		| 'rightturn' wyrazenie
+		;
+
+leftturn
+		: 'lt' wyrazenie 
+		| 'leftturn' wyrazenie
+		;
 
 blok
 	: KONIEC_WIERSZA* '{' instrukcja+ '}' KONIEC_WIERSZA*

@@ -24,3 +24,9 @@ python main.py [ścieżka_do_programu]
 ```
 Jeśli nie podamy ścieżki, możemy wpisać program zbudowany z jednej linii.
 Jest to dobra opcja do debugowania np. wyrażen arytmetycznych.
+
+
+`Poniższa komenda pozwala wyświetlić graficznie podaną instrukcję`
+```
+antlr4-parse logo_grammar.g4 program *SCIĘŻKA DO PLIKU TESTOWEGO* -gui
+```

@@ -77,6 +77,45 @@ class Visitor(logo_grammarVisitor):
 
     # Visit a parse tree produced by logo_grammarParser#ruch.
     def visitRuch(self, ctx:logo_grammarParser.RuchContext):
+        # : forward
+        # | backward
+        # | rightturn
+        # | leftturn
+        return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by logo_grammarParser#forward.
+    def visitForward(self, ctx:logo_grammarParser.ForwardContext):
+        # : 'fd' wyrazenie 
+		# | 'forward' wyrazenie
+        self.log_common_move(ctx)
+
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by logo_grammarParser#backward.
+    def visitBackward(self, ctx:logo_grammarParser.BackwardContext):
+		# : 'bk' wyrazenie 
+		# | 'backward' wyrazenie
+        self.log_common_move(ctx)
+
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by logo_grammarParser#rightturn.
+    def visitRightturn(self, ctx:logo_grammarParser.RightturnContext):
+		# : 'rt' wyrazenie 
+		# | 'rightturn' wyrazenie
+        self.log_common_move(ctx)
+        
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by logo_grammarParser#leftturn.
+    def visitLeftturn(self, ctx:logo_grammarParser.LeftturnContext):
+		# : 'lt' wyrazenie 
+		# | 'leftturn' wyrazenie
+        self.log_common_move(ctx)
+        
         return self.visitChildren(ctx)
 
 
@@ -151,5 +190,11 @@ class Visitor(logo_grammarVisitor):
             self.logger.log(("jestem w WARTOŚĆ_LICZBOWA zwracam wartość liczbową \n"))
             return int(ctx.getText()) * (-1 if isNegative else 1)
         
+    def log_common_move(self, ctx):
+        value = self.visit(ctx.wyrazenie())
+        cmd = ctx.getChild(0).getText()
+        self.logger.log(f"ruch {cmd} {value}")
+        return value
+    
 del logo_grammarParser
     
