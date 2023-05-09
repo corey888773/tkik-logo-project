@@ -149,8 +149,8 @@ wartosc_liczbowa
     ;
 
 OPERATOR_ZNAKU
-    : '-'
-    | '+'
+    : '++'
+    | '--'
     ;
 
 OPERATOR_ARYTMETYCZNY
