@@ -8,16 +8,24 @@ class Visitor(logo_grammarVisitor):
 
 # Visit a parse tree produced by logo_grammarParser#program.
     def visitProgram(self, ctx:logo_grammarParser.ProgramContext):
-        return self.visitChildren(ctx)
+        # (instrukcja? KONIEC_WIERSZA+)+ instrukcja? EOF
+
+        for instrukcja in ctx.instrukcja():
+            self.visit(instrukcja)
 
 
     # Visit a parse tree produced by logo_grammarParser#instrukcja.
     def visitInstrukcja(self, ctx:logo_grammarParser.InstrukcjaContext):
-        return self.visitChildren(ctx)
+        # polecenie KOMENTARZ? | KOMENTARZ
+
+        if ctx.polecenie():
+            self.visit(ctx.polecenie())
 
 
     # Visit a parse tree produced by logo_grammarParser#polecenie.
     def visitPolecenie(self, ctx:logo_grammarParser.PolecenieContext):
+        # ruch | clearscreen | penup | pendown | hideturtle | showturtle | home | setxy | setpensize | if | repeat
+
         return self.visitChildren(ctx)
 
 
@@ -53,96 +61,153 @@ class Visitor(logo_grammarVisitor):
 
     # Visit a parse tree produced by logo_grammarParser#setxy.
     def visitSetxy(self, ctx:logo_grammarParser.SetxyContext):
-        value_1 = self.visit(ctx.wyrazenie(0))
-        self.logger.log('\n\n\n\n')
-        value_2 = self.visit(ctx.wyrazenie(1))
-        self.logger.log(f"setxy {value_1} {value_2}")
-        return self.visitChildren(ctx)
+        # 'setxy' wyrazenie wyrazenie
+
+        x = self.visit(ctx.wyrazenie(0))
+        y = self.visit(ctx.wyrazenie(1))
+        self.logger.log(f"setxy {x} {y}")
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#setpensize.
     def visitSetpensize(self, ctx:logo_grammarParser.SetpensizeContext):
-        return self.visitChildren(ctx)
+        # ('setps' | 'setpensize') wyrazenie
+
+        size = self.visit(ctx.wyrazenie())
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#if.
     def visitIf(self, ctx:logo_grammarParser.IfContext):
-        return self.visitChildren(ctx)
+        # 'if' '(' wyrazenie_logiczne ')' blok
+
+        if self.visit(ctx.wyrazenie_logiczne()):
+            return self.visit(ctx.blok())
 
 
     # Visit a parse tree produced by logo_grammarParser#repeat.
     def visitRepeat(self, ctx:logo_grammarParser.RepeatContext):
-        return self.visitChildren(ctx)
+        # 'repeat' LICZBA blok
+
+        count = int(ctx.LICZBA().getText())
+        self.logger.log(f"repeat {count}")
+
+        for i in range(count):
+            self.visit(ctx.blok())
 
 
     # Visit a parse tree produced by logo_grammarParser#ruch.
     def visitRuch(self, ctx:logo_grammarParser.RuchContext):
-        # : forward
-        # | backward
-        # | rightturn
-        # | leftturn
-        return self.visitChildren(ctx)
+        # forward | backward | rightturn | leftturn
+
+        if ctx.forward():
+            self.visit(ctx.forward())
+        elif ctx.backward():
+            self.visit(ctx.backward())
+        elif ctx.rightturn():
+            self.visit(ctx.rightturn())
+        elif ctx.leftturn():
+            self.visit(ctx.leftturn())
     
+
     # Visit a parse tree produced by logo_grammarParser#forward.
     def visitForward(self, ctx:logo_grammarParser.ForwardContext):
-        # : 'fd' wyrazenie 
-		# | 'forward' wyrazenie
-        self.log_common_move(ctx)
+        # 'fd' wyrazenie  | 'forward' wyrazenie
 
-        return self.visitChildren(ctx)
+        steps = self.visit(ctx.wyrazenie())
+        self.log_common_move(ctx)
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#backward.
     def visitBackward(self, ctx:logo_grammarParser.BackwardContext):
-		# : 'bk' wyrazenie 
-		# | 'backward' wyrazenie
-        self.log_common_move(ctx)
+		# 'bk' wyrazenie | 'backward' wyrazenie
 
-        return self.visitChildren(ctx)
+        steps = self.visit(ctx.wyrazenie())
+        self.log_common_move(ctx)
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#rightturn.
     def visitRightturn(self, ctx:logo_grammarParser.RightturnContext):
-		# : 'rt' wyrazenie 
-		# | 'rightturn' wyrazenie
+		# 'rt' wyrazenie  | 'rightturn' wyrazenie
+
+        degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        
-        return self.visitChildren(ctx)
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#leftturn.
     def visitLeftturn(self, ctx:logo_grammarParser.LeftturnContext):
-		# : 'lt' wyrazenie 
-		# | 'leftturn' wyrazenie
+		# 'lt' wyrazenie | 'leftturn' wyrazenie
+
+        degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        
-        return self.visitChildren(ctx)
+        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#blok.
     def visitBlok(self, ctx:logo_grammarParser.BlokContext):
-        return self.visitChildren(ctx)
+        # KONIEC_WIERSZA* '{' instrukcja+ '}' KONIEC_WIERSZA*
+
+        for instrukcja in ctx.instrukcja():
+            self.visit(instrukcja)
 
 
     # Visit a parse tree produced by logo_grammarParser#wyrazenie_logiczne.
     def visitWyrazenie_logiczne(self, ctx:logo_grammarParser.Wyrazenie_logiczneContext):
-        return self.visitChildren(ctx)
+        # wyrazenie_porownania (OPERATOR_LOGICZNY wyrazenie_porownania)*
+
+        result = self.visit(ctx.wyrazenie_porownania(0))
+
+        for index, i in enumerate(ctx.OPERATOR_LOGICZNY()):
+            operator = str(i)
+            if operator == "&&":
+                result = result and self.visit(ctx.wyrazenie_porownania(index + 1))
+            elif operator == "||":
+                result = result or self.visit(ctx.wyrazenie_porownania(index + 1))
+
+        return result
 
 
     # Visit a parse tree produced by logo_grammarParser#wyrazenie_porownania.
     def visitWyrazenie_porownania(self, ctx:logo_grammarParser.Wyrazenie_porownaniaContext):
-        return self.visitChildren(ctx)
+        # wartosc_logiczna (OPERATOR_POROWNANIA wartosc_logiczna)?
+
+        result = self.visit(ctx.wartosc_logiczna(0))
+
+        if ctx.OPERATOR_POROWNANIA():
+            operator = str(ctx.OPERATOR_POROWNANIA())
+            if operator == '<':
+                result = result < self.visit(ctx.wartosc_logiczna(1))
+            elif operator == '<=':
+                result = result <= self.visit(ctx.wartosc_logiczna(1))
+            elif operator == '>':
+                result = result > self.visit(ctx.wartosc_logiczna(1))
+            elif operator == '>=':
+                result = result >= self.visit(ctx.wartosc_logiczna(1))
+            elif operator == '=':
+                result = result == self.visit(ctx.wartosc_logiczna(1))
+            elif operator == '!=':
+                result = result != self.visit(ctx.wartosc_logiczna(1))
+
+        return result
+
 
 
     # Visit a parse tree produced by logo_grammarParser#wartosc_logiczna.
     def visitWartosc_logiczna(self, ctx:logo_grammarParser.Wartosc_logicznaContext):
-        return self.visitChildren(ctx)
+        # wyrazenie | '(' wyrazenie_logiczne ')'
+
+        if ctx.wyrazenie():
+            return self.visit(ctx.wyrazenie())
+        else:
+            return self.visit(ctx.wyrazenie_logiczne())
 
     # Visit a parse tree produced by logo_grammarParser#wyrazenie.
     def visitWyrazenie(self, ctx:logo_grammarParser.WyrazenieContext):
         # wyrazenie_mnozace (OPERATOR_ARYTMETYCZNY wyrazenie_mnozace )*
-        self.logger.log(f"wyrażenie {ctx.getText()} a to mój operator arytmetyczny: {ctx.OPERATOR_ARYTMETYCZNY(0)}")
-        self.logger.log(f"jestem w WYRAŻENIE przechodzę do wyrażenia mnożącego\n")
+
         result = self.visit(ctx.wyrazenie_mnozace(0))
         
         for index, i in enumerate(ctx.OPERATOR_ARYTMETYCZNY()):
@@ -158,8 +223,7 @@ class Visitor(logo_grammarVisitor):
     # Visit a parse tree produced by logo_grammarParser#wyrazenie_mnozace.
     def visitWyrazenie_mnozace(self, ctx:logo_grammarParser.Wyrazenie_mnozaceContext):
         # wartosc_liczbowa (OPERATOR_MNOZACY wartosc_liczbowa)*
-        self.logger.log(f"wyrażenie mnożące {ctx.getText()} a to mój operator mnożący: {ctx.OPERATOR_MNOZACY(0)}")
-        self.logger.log("jestem w WYRAŻENIE_MNOŻĄCE przechodzę do wartosci liczbowej \n")
+
         result = self.visit(ctx.wartosc_liczbowa(0))
 
         for index, i in enumerate(ctx.OPERATOR_MNOZACY()):
@@ -179,15 +243,12 @@ class Visitor(logo_grammarVisitor):
     # Visit a parse tree produced by logo_grammarParser#wartosc_liczbowa.
     def visitWartosc_liczbowa(self, ctx:logo_grammarParser.Wartosc_liczbowaContext):
         #  OPERATOR_ZNAKU? (LICZBA | '(' wyrazenie ')')
+
         isNegative = ctx.OPERATOR_ZNAKU() != None and ctx.getText().startswith('-')
             
         if ctx.wyrazenie():
-            self.logger.log(f"wartosc_liczbowa {ctx.getText()} znak ujemny: {isNegative} wyrazenie")
-            self.logger.log(("jestem w WARTOŚĆ_LICZBOWA przechodzę do wyrażenia \n"))
             return self.visit(ctx.wyrazenie()) * (-1 if isNegative else 1)
         else:
-            self.logger.log(f"wartosc_liczbowa {ctx.getText()} znak ujemny: {isNegative} wartosc")
-            self.logger.log(("jestem w WARTOŚĆ_LICZBOWA zwracam wartość liczbową \n"))
             return int(ctx.getText()) * (-1 if isNegative else 1)
         
     def log_common_move(self, ctx):

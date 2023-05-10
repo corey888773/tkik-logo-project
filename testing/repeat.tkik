@@ -1,0 +1,2 @@
+repeat 3 {fd 7*10} # dodany komentarz
+if (4 > 2) {bk 5}
