@@ -1,10 +1,13 @@
+import time
 from dist.logo_grammarParser import logo_grammarParser
 from dist.logo_grammarVisitor import logo_grammarVisitor
+from drawing.vehicle import Direction
 
 class Visitor(logo_grammarVisitor):
     
-    def __init__(self, log):
+    def __init__(self, log, main_window):
         self.logger = log
+        self.main_window = main_window
 
 # Visit a parse tree produced by logo_grammarParser#program.
     def visitProgram(self, ctx:logo_grammarParser.ProgramContext):
@@ -66,6 +69,7 @@ class Visitor(logo_grammarVisitor):
         x = self.visit(ctx.wyrazenie(0))
         y = self.visit(ctx.wyrazenie(1))
         self.logger.log(f"setxy {x} {y}")
+        self.main_window.vehicle.set_position((x, y))
         # to do
 
 
@@ -114,8 +118,9 @@ class Visitor(logo_grammarVisitor):
     def visitForward(self, ctx:logo_grammarParser.ForwardContext):
         # 'fd' wyrazenie  | 'forward' wyrazenie
 
-        steps = self.visit(ctx.wyrazenie())
+        distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
+        self.move_vehicle(distance, Direction.FORWARD)
         # to do
 
 
@@ -123,8 +128,9 @@ class Visitor(logo_grammarVisitor):
     def visitBackward(self, ctx:logo_grammarParser.BackwardContext):
 		# 'bk' wyrazenie | 'backward' wyrazenie
 
-        steps = self.visit(ctx.wyrazenie())
+        distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
+        self.move_vehicle(distance, Direction.BACKWARD)
         # to do
 
 
@@ -132,8 +138,9 @@ class Visitor(logo_grammarVisitor):
     def visitRightturn(self, ctx:logo_grammarParser.RightturnContext):
 		# 'rt' wyrazenie  | 'rightturn' wyrazenie
 
-        degrees = self.visit(ctx.wyrazenie())
+        distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
+        self.move_vehicle(distance, Direction.RIGHT)
         # to do
 
 
@@ -141,8 +148,9 @@ class Visitor(logo_grammarVisitor):
     def visitLeftturn(self, ctx:logo_grammarParser.LeftturnContext):
 		# 'lt' wyrazenie | 'leftturn' wyrazenie
 
-        degrees = self.visit(ctx.wyrazenie())
+        distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
+        self.move_vehicle(distance, Direction.LEFT)
         # to do
 
 
@@ -256,6 +264,11 @@ class Visitor(logo_grammarVisitor):
         cmd = ctx.getChild(0).getText()
         self.logger.log(f"ruch {cmd} {value}")
         return value
+    
+    def move_vehicle(self, distance: int, direction: Direction):
+        self.main_window.vehicle.remaining_distance += distance
+        self.main_window.vehicle.change_direction(direction)
+        self.main_window.run_frames(distance)
     
 del logo_grammarParser
     
