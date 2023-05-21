@@ -34,31 +34,38 @@ class Visitor(logo_grammarVisitor):
 
     # Visit a parse tree produced by logo_grammarParser#clearscreen.
     def visitClearscreen(self, ctx:logo_grammarParser.ClearscreenContext):
+        self.main_window.canvas.clear()
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#penup.
     def visitPenup(self, ctx:logo_grammarParser.PenupContext):
+        self.main_window.vehicle.pen.drawing_state = False
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#pendown.
     def visitPendown(self, ctx:logo_grammarParser.PendownContext):
+        self.main_window.vehicle.pen.drawing_state = True
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#hideturtle.
     def visitHideturtle(self, ctx:logo_grammarParser.HideturtleContext):
+        self.main_window.vehicle.is_turtle_visible = False
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#showturtle.
     def visitShowturtle(self, ctx:logo_grammarParser.ShowturtleContext):
+        self.main_window.vehicle.is_turtle_visible = True
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#home.
     def visitHome(self, ctx:logo_grammarParser.HomeContext):
+        
+        self.main_window.vehicle.go_home()
         return self.visitChildren(ctx)
 
 
@@ -78,6 +85,7 @@ class Visitor(logo_grammarVisitor):
         # ('setps' | 'setpensize') wyrazenie
 
         size = self.visit(ctx.wyrazenie())
+        self.main_window.vehicle.pen.set_pen_size(size)
         # to do
 
 
@@ -97,7 +105,7 @@ class Visitor(logo_grammarVisitor):
         self.logger.log(f"repeat {count}")
 
         for i in range(count):
-            self.visit(ctx.blok())
+            return self.visit(ctx.blok())
 
 
     # Visit a parse tree produced by logo_grammarParser#ruch.
@@ -105,13 +113,13 @@ class Visitor(logo_grammarVisitor):
         # forward | backward | rightturn | leftturn
 
         if ctx.forward():
-            self.visit(ctx.forward())
+            return self.visit(ctx.forward())
         elif ctx.backward():
-            self.visit(ctx.backward())
+           return self.visit(ctx.backward())
         elif ctx.rightturn():
-            self.visit(ctx.rightturn())
+            return self.visit(ctx.rightturn())
         elif ctx.leftturn():
-            self.visit(ctx.leftturn())
+            return self.visit(ctx.leftturn())
     
 
     # Visit a parse tree produced by logo_grammarParser#forward.
@@ -120,7 +128,9 @@ class Visitor(logo_grammarVisitor):
 
         distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.move_vehicle(distance, Direction.FORWARD)
+        self.main_window.vehicle.remaining_distance += distance
+        self.main_window.vehicle.change_direction(Direction.FORWARD)
+        self.main_window.run_frames(distance)
         # to do
 
 
@@ -130,7 +140,9 @@ class Visitor(logo_grammarVisitor):
 
         distance = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.move_vehicle(distance, Direction.BACKWARD)
+        self.main_window.vehicle.remaining_distance += distance
+        self.main_window.vehicle.change_direction(Direction.BACKWARD)
+        self.main_window.run_frames(distance)
         # to do
 
 
@@ -138,9 +150,9 @@ class Visitor(logo_grammarVisitor):
     def visitRightturn(self, ctx:logo_grammarParser.RightturnContext):
 		# 'rt' wyrazenie  | 'rightturn' wyrazenie
 
-        distance = self.visit(ctx.wyrazenie())
+        degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.move_vehicle(distance, Direction.RIGHT)
+        self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
         # to do
 
 
@@ -148,9 +160,9 @@ class Visitor(logo_grammarVisitor):
     def visitLeftturn(self, ctx:logo_grammarParser.LeftturnContext):
 		# 'lt' wyrazenie | 'leftturn' wyrazenie
 
-        distance = self.visit(ctx.wyrazenie())
+        degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.move_vehicle(distance, Direction.LEFT)
+        self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
         # to do
 
 
@@ -200,8 +212,6 @@ class Visitor(logo_grammarVisitor):
                 result = result != self.visit(ctx.wartosc_logiczna(1))
 
         return result
-
-
 
     # Visit a parse tree produced by logo_grammarParser#wartosc_logiczna.
     def visitWartosc_logiczna(self, ctx:logo_grammarParser.Wartosc_logicznaContext):
@@ -263,12 +273,7 @@ class Visitor(logo_grammarVisitor):
         value = self.visit(ctx.wyrazenie())
         cmd = ctx.getChild(0).getText()
         self.logger.log(f"ruch {cmd} {value}")
-        return value
-    
-    def move_vehicle(self, distance: int, direction: Direction):
-        self.main_window.vehicle.remaining_distance += distance
-        self.main_window.vehicle.change_direction(direction)
-        self.main_window.run_frames(distance)
+        return value      
     
 del logo_grammarParser
     

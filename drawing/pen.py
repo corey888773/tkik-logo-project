@@ -12,28 +12,19 @@ class Pen:
         self.color = (0,0,0)
         self.width = 1
 
-        self.isDrawing = True
+        self.drawing_state = True
 
-    def setColor(self, color: tuple) -> None:
+    def set_color(self, color: tuple) -> None:
         self.color = color
 
     def draw(self, position: tuple) -> None:
         pos = deepcopy(position)
 
-        if self.isDrawing:
+        if self.drawing_state:
             self.canvas.addDot(pos, self.color, self.width)
     
-    def setWidth(self, width) -> None:
+    def set_pen_size(self, width) -> None:
         self.width = width
 
-    def setDrawingState(self, isDrawing: bool) -> None:
-        self.isDrawing = isDrawing
-    
-    def switchDrawingState(self) -> None:
-        self.isDrawing = not self.isDrawing
-
-    def turnOnDrawing(self) -> None:
-        self.isDrawing = True
-    
-    def turnOffDrawing(self) -> None:
-        self.isDrawing = False
+    def switch_drawing_state(self) -> None:
+        self.drawing_state = not self.drawing_state

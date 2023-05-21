@@ -1,0 +1,3 @@
+repeat 5 {fd 90 lt 90 forward 90 leftturn 90 forward 90 leftturn 90 fd 90 lt 90}
+
+

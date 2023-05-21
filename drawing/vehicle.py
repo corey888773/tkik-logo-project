@@ -15,8 +15,11 @@ class Vehicle:
         self.image = pygame.image.load('./drawing/assets/vehicle.png').convert_alpha()
         self.img_size = (32, 32)
         
+        # scale the image
         self.image = pygame.transform.scale(self.image, self.img_size)
-
+        # mirror the image
+        self.image = pygame.transform.flip(self.image, True, False)
+        
         self.position: tuple = (self.screen_size[0]/2 - self.img_size[0]/2,
                                 self.screen_size[1]/2 - self.img_size[1]/2)
         self.rotation: int = 0
@@ -24,13 +27,17 @@ class Vehicle:
         
         self.remaining_distance = 0
         
+        self.is_turtle_visible = True
+        
     def nextFrame(self) -> None:
         self.move()
+        
         rotated_image = pygame.transform.rotate(self.image, -self.rotation)
-        # self.move(self.velocity[0], self.velocity[1])
+        
         self.pen.draw(self.get_center_position())
 
-        self.screen.blit(rotated_image, self.position) # draw the rotated image
+        if self.is_turtle_visible:
+            self.screen.blit(rotated_image, self.position) # draw the rotated image
 
     def move(self) -> None:
         if self.remaining_distance > 0:
@@ -44,16 +51,22 @@ class Vehicle:
 
     def set_position(self, position: tuple) -> None:
         self.position = position
+        self.rotation = 0
         
-    def change_direction(self, direction: Direction) -> None:
+    def change_direction(self, direction: Direction, degrees=0) -> None:
         if direction == Direction.RIGHT:
-            self.rotation -= 90
+            self.rotation -= degrees
         elif direction == Direction.LEFT:
-            self.rotation += 90
+            self.rotation += degrees
         elif direction == Direction.BACKWARD:
             self.rotation += 180
         else :
             pass
+        
+    def go_home(self) -> None:
+        self.position = (self.screen_size[0]/2 - self.img_size[0]/2,
+                                self.screen_size[1]/2 - self.img_size[1]/2)
+        self.rotation = 0
 
     def get_center_position(self) -> tuple:
         return (self.position[0] + self.img_size[0]/2, self.position[1] + self.img_size[1]/2)

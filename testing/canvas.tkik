@@ -1,0 +1,22 @@
+fd 90
+leftturn 90
+penup
+forward 30
+pendown
+forward 30
+hideturtle
+forward 30
+leftturn 90
+forward 45
+showturtle
+forward 45
+leftturn 90
+setps 5
+forward 180
+home
+setpensize 2
+rt 45
+forward 126
+clearscreen
+home
+bk 250

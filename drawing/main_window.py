@@ -20,7 +20,7 @@ class MainWindow:
         self.canvas.nextFrame()
         self.vehicle.nextFrame()
         pygame.display.flip() # update the screen with what we've drawn.
-        
+    
     def run_frames(self, frames: int) -> None:
         for _ in range(frames):
             self.nextFrame()
