@@ -5,7 +5,7 @@ program
     ;
 
 instrukcja
-	: polecenie KOMENTARZ?
+	: KONIEC_WIERSZA* polecenie KOMENTARZ? KONIEC_WIERSZA*
 	| KOMENTARZ
 	;
 

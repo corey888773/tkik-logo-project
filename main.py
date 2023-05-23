@@ -1,4 +1,5 @@
 import sys
+import pygame
 from antlr4 import *
 from dist.logo_grammarLexer import logo_grammarLexer
 from dist.logo_grammarParser import logo_grammarParser
@@ -16,10 +17,10 @@ if __name__ == "__main__":
         program = input('>>> ')
     else:
         program = open(sys.argv[1]).read()
-        
+
     logger = Logger()
     main_window = MainWindow()
-        
+
     data =  InputStream(program)
     lexer = logo_grammarLexer(data)
     stream = CommonTokenStream(lexer)
@@ -28,9 +29,15 @@ if __name__ == "__main__":
 
         # First run
     # output = ParseTreeWalker().walk(logo_grammarListener(), tree)
-    
+
     output = Visitor(logger, main_window).visit(tree)
-    
+
     logger.log(f"Output: {output}")
-    
-    
+
+    # running = True
+    # while running:
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
+    #             running = False
+    #
+    # pygame.quit()

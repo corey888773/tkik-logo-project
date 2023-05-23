@@ -1,0 +1,8 @@
+repeat 5 {
+pd
+fd 100
+pu
+fd 10
+pd
+lt 45
+}
