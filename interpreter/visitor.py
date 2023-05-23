@@ -105,7 +105,7 @@ class Visitor(logo_grammarVisitor):
         self.logger.log(f"repeat {count}")
 
         for i in range(count):
-            return self.visit(ctx.blok())
+            self.visit(ctx.blok())
 
 
     # Visit a parse tree produced by logo_grammarParser#ruch.
@@ -143,6 +143,7 @@ class Visitor(logo_grammarVisitor):
         self.main_window.vehicle.remaining_distance += distance
         self.main_window.vehicle.change_direction(Direction.BACKWARD)
         self.main_window.run_frames(distance)
+        self.main_window.vehicle.change_direction(Direction.BACKWARD)
         # to do
 
 
@@ -152,7 +153,7 @@ class Visitor(logo_grammarVisitor):
 
         degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
+        self.main_window.vehicle.change_direction(Direction.LEFT, degrees)
         # to do
 
 

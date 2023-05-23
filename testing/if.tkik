@@ -1,1 +1,14 @@
-if (5+7 > 2) {fd 5}
+bk 100
+pu
+fd 100
+pd
+if (5+7 > 2) {
+    fd 90
+    lt 90
+    forward 90
+    leftturn 90
+    forward 90
+    leftturn 90
+    fd 90
+    lt 90
+}
