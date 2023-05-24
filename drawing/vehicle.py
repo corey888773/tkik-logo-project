@@ -46,18 +46,20 @@ class Vehicle:
         
     def change_position(self) -> None:
         self.position = (self.position[0] + math.cos(math.radians(self.rotation)),
-                            self.position[1] + math.sin(math.radians(self.rotation)))
+                         self.position[1] + math.sin(math.radians(self.rotation)))
         
 
     def set_position(self, position: tuple) -> None:
-        self.position = position
+        # 0 0 is the center of the screen
+        self.position = (position[0] + self.screen_size[0]/2 - self.img_size[0]/2,
+                         - position[1] + self.screen_size[1]/2 - self.img_size[1]/2)
         self.rotation = 0
         
     def change_direction(self, direction: Direction, degrees=0) -> None:
         if direction == Direction.RIGHT:
-            self.rotation -= degrees
-        elif direction == Direction.LEFT:
             self.rotation += degrees
+        elif direction == Direction.LEFT:
+            self.rotation -= degrees
         elif direction == Direction.BACKWARD:
             self.rotation += 180
         else :
@@ -65,9 +67,9 @@ class Vehicle:
         
     def go_home(self) -> None:
         self.position = (self.screen_size[0]/2 - self.img_size[0]/2,
-                                self.screen_size[1]/2 - self.img_size[1]/2)
+                         self.screen_size[1]/2 - self.img_size[1]/2)
         self.rotation = 0
 
     def get_center_position(self) -> tuple:
-        return (self.position[0] + self.img_size[0]/2, self.position[1] + self.img_size[1]/2)
-        
+        return (self.position[0] + self.img_size[0]/2,
+                self.position[1] + self.img_size[1]/2)

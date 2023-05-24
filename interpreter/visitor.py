@@ -73,6 +73,7 @@ class Visitor(logo_grammarVisitor):
     def visitSetxy(self, ctx:logo_grammarParser.SetxyContext):
         # 'setxy' wyrazenie wyrazenie
 
+        # 0 0 is in the middle of the screen
         x = self.visit(ctx.wyrazenie(0))
         y = self.visit(ctx.wyrazenie(1))
         self.logger.log(f"setxy {x} {y}")
@@ -153,7 +154,7 @@ class Visitor(logo_grammarVisitor):
 
         degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.main_window.vehicle.change_direction(Direction.LEFT, degrees)
+        self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
         # to do
 
 
@@ -163,7 +164,7 @@ class Visitor(logo_grammarVisitor):
 
         degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
-        self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
+        self.main_window.vehicle.change_direction(Direction.LEFT, degrees)
         # to do
 
 

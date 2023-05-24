@@ -1,4 +1,4 @@
-repeat 5 {
+repeat 8 {
 pd
 fd 100
 pu

@@ -22,4 +22,6 @@ class Canvas:
     def clear(self) -> None:
         self.points = []
         self.canvas.fill((255, 255, 255))
-        
+
+    def save(self) -> None:
+        pygame.image.save(self.screen, 'logo.png')

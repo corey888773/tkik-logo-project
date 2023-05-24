@@ -1,4 +1,7 @@
 bk 100
+lt 90
+forward 50
+rt 90
 pu
 fd 100
 pd

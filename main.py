@@ -34,10 +34,11 @@ if __name__ == "__main__":
 
     logger.log(f"Output: {output}")
 
-    # running = True
-    # while running:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
-    #             running = False
-    #
-    # pygame.quit()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
+                running = False
+
+    main_window.save()
+    pygame.quit()
