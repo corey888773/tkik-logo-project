@@ -34,30 +34,35 @@ class Visitor(logo_grammarVisitor):
 
     # Visit a parse tree produced by logo_grammarParser#clearscreen.
     def visitClearscreen(self, ctx:logo_grammarParser.ClearscreenContext):
+
         self.main_window.canvas.clear()
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#penup.
     def visitPenup(self, ctx:logo_grammarParser.PenupContext):
+
         self.main_window.vehicle.pen.drawing_state = False
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#pendown.
     def visitPendown(self, ctx:logo_grammarParser.PendownContext):
+
         self.main_window.vehicle.pen.drawing_state = True
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#hideturtle.
     def visitHideturtle(self, ctx:logo_grammarParser.HideturtleContext):
+
         self.main_window.vehicle.is_turtle_visible = False
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#showturtle.
     def visitShowturtle(self, ctx:logo_grammarParser.ShowturtleContext):
+
         self.main_window.vehicle.is_turtle_visible = True
         return self.visitChildren(ctx)
 
@@ -73,13 +78,12 @@ class Visitor(logo_grammarVisitor):
     def visitSetxy(self, ctx:logo_grammarParser.SetxyContext):
         # 'setxy' wyrazenie wyrazenie
 
-        # 0 0 is in the middle of the screen
         x = self.visit(ctx.wyrazenie(0))
         y = self.visit(ctx.wyrazenie(1))
         self.logger.log(f"setxy {x} {y}")
         self.main_window.vehicle.set_position((x, y))
-        # to do
-
+        return self.visitChildren(ctx)
+    
 
     # Visit a parse tree produced by logo_grammarParser#setpensize.
     def visitSetpensize(self, ctx:logo_grammarParser.SetpensizeContext):
@@ -87,7 +91,7 @@ class Visitor(logo_grammarVisitor):
 
         size = self.visit(ctx.wyrazenie())
         self.main_window.vehicle.pen.set_pen_size(size)
-        # to do
+        return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by logo_grammarParser#if.
@@ -132,7 +136,6 @@ class Visitor(logo_grammarVisitor):
         self.main_window.vehicle.remaining_distance += distance
         self.main_window.vehicle.change_direction(Direction.FORWARD)
         self.main_window.run_frames(distance)
-        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#backward.
@@ -145,7 +148,6 @@ class Visitor(logo_grammarVisitor):
         self.main_window.vehicle.change_direction(Direction.BACKWARD)
         self.main_window.run_frames(distance)
         self.main_window.vehicle.change_direction(Direction.BACKWARD)
-        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#rightturn.
@@ -155,7 +157,6 @@ class Visitor(logo_grammarVisitor):
         degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
         self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
-        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#leftturn.
@@ -165,7 +166,6 @@ class Visitor(logo_grammarVisitor):
         degrees = self.visit(ctx.wyrazenie())
         self.log_common_move(ctx)
         self.main_window.vehicle.change_direction(Direction.LEFT, degrees)
-        # to do
 
 
     # Visit a parse tree produced by logo_grammarParser#blok.
@@ -278,4 +278,3 @@ class Visitor(logo_grammarVisitor):
         return value      
     
 del logo_grammarParser
-    
