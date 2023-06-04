@@ -11,7 +11,7 @@ class Direction:
 class Vehicle:
     def __init__(self, screen: pygame.Surface, canvas) -> None:
         self.screen: pygame.Surface = screen
-        self.screen_size: tuple = screen.get_size()
+        self.screen_size: tuple = canvas.get_size()
         self.image = pygame.image.load('./drawing/assets/vehicle.png').convert_alpha()
         self.img_size = (32, 32)
         
@@ -28,6 +28,8 @@ class Vehicle:
         self.remaining_distance = 0
         
         self.is_turtle_visible = True
+        self.go_home()
+        
         
     def nextFrame(self) -> None:
         self.move()
@@ -46,13 +48,13 @@ class Vehicle:
         
     def change_position(self) -> None:
         self.position = (self.position[0] + math.cos(math.radians(self.rotation)),
-                         self.position[1] + math.sin(math.radians(self.rotation)))
+                            self.position[1] + math.sin(math.radians(self.rotation)))
         
 
     def set_position(self, position: tuple) -> None:
         # 0 0 is the center of the screen
         self.position = (position[0] + self.screen_size[0]/2 - self.img_size[0]/2,
-                         - position[1] + self.screen_size[1]/2 - self.img_size[1]/2)
+                            - position[1] + self.screen_size[1]/2 - self.img_size[1]/2)
         self.rotation = 0
         
     def change_direction(self, direction: Direction, degrees=0) -> None:
@@ -67,7 +69,7 @@ class Vehicle:
         
     def go_home(self) -> None:
         self.position = (self.screen_size[0]/2 - self.img_size[0]/2,
-                         self.screen_size[1]/2 - self.img_size[1]/2)
+                            self.screen_size[1]/2 - self.img_size[1]/2)
         self.rotation = 0
 
     def get_center_position(self) -> tuple:

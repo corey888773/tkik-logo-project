@@ -1,5 +1,4 @@
-import sys
-import pygame
+import sys, os, pygame
 from antlr4 import *
 from dist.logo_grammarLexer import logo_grammarLexer
 from dist.logo_grammarParser import logo_grammarParser
@@ -7,6 +6,7 @@ from dist.logo_grammarListener import logo_grammarListener
 # from interpreter.listener import Listener
 from interpreter.logger import Logger
 from interpreter.visitor import Visitor
+
 
 from drawing.main_window import MainWindow
 
@@ -18,10 +18,13 @@ if __name__ == "__main__":
     else:
         program = open(sys.argv[1]).read()
 
-    outfile = sys.argv[1].split('\\')[-1].split('.')[0]
+    if os.system == 'Windows':  
+        outfile = sys.argv[1].split('\\')[-1].split('.')[0]
+    else:
+        outfile = sys.argv[1].split('/')[-1].split('.')[0]
 
     logger = Logger()
-    main_window = MainWindow()
+    main_window = MainWindow(program)
 
     data =  InputStream(program)
     lexer = logo_grammarLexer(data)
@@ -39,8 +42,11 @@ if __name__ == "__main__":
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.QUIT: #or event.type == pygame.MOUSEBUTTONDOWN
                 running = False
+            else:
+                main_window.nextFrame(event=event)
 
+                
     main_window.save(outfile)
     pygame.quit()
