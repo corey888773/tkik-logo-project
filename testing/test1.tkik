@@ -1,0 +1,7 @@
+repeat 20 {
+    repeat 180 {
+        fd 1 
+        rt 2
+        } 
+    rt 18
+}

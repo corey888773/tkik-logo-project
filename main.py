@@ -18,6 +18,8 @@ if __name__ == "__main__":
     else:
         program = open(sys.argv[1]).read()
 
+    outfile = sys.argv[1].split('\\')[-1].split('.')[0]
+
     logger = Logger()
     main_window = MainWindow()
 
@@ -40,5 +42,5 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
                 running = False
 
-    main_window.save()
+    main_window.save(outfile)
     pygame.quit()

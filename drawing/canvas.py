@@ -1,4 +1,5 @@
 import pygame
+import os
 
 class Dot:
     def __init__(self, position: tuple, color: tuple, size: float) -> None:
@@ -23,5 +24,10 @@ class Canvas:
         self.points = []
         self.canvas.fill((255, 255, 255))
 
-    def save(self) -> None:
-        pygame.image.save(self.screen, 'logo.png')
+    def save(self, filename: str, folder: str = 'images') -> None:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        folder = os.path.abspath(folder)
+        filename = os.path.join(folder, filename)
+        print(filename)
+        pygame.image.save(self.screen, filename + '.png')

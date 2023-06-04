@@ -24,9 +24,9 @@ class MainWindow:
     def run_frames(self, frames: int) -> None:
         for _ in range(frames):
             self.nextFrame()
-            time.sleep(1/60)
+            time.sleep(1/300)
 
-    def save(self) -> None:
+    def save(self, filename: str) -> None:
         self.vehicle.is_turtle_visible = False
         self.run_frames(1)
-        self.canvas.save()
+        self.canvas.save(filename)
