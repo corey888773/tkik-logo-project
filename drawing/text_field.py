@@ -2,6 +2,9 @@ import pygame
 import pygame.freetype
 
 EXECUTION_LINE = "\n=======================================\n"
+BLACK = (0, 0, 0)
+LIME_GREEN = (50, 205, 50)
+
 
 class TextField:
     def __init__(self, screen: pygame.Surface, font_size, initial_text=""):
@@ -11,7 +14,7 @@ class TextField:
         self.pos_x = 0
         self.pos_y = screen.get_height() - self.height
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.width, self.height)
-        self.color = pygame.Color('grey')
+        self.color = BLACK
         self.font_size = font_size
         self.font = pygame.freetype.SysFont(None, self.font_size)
         self.scroll_pos = 0
@@ -21,12 +24,16 @@ class TextField:
             self.text += EXECUTION_LINE
         else:
             self.text = ""
+            
+        self.execution_script = initial_text
         
         self.draw()
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
+                if self.text.endswith(EXECUTION_LINE):
+                    return
                 self.text = self.text[:-1]
             elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                 self.text += '\n'
@@ -45,7 +52,7 @@ class TextField:
 
         y = self.rect.y + 5
         for line in visible_lines:
-            text_surface, _ = self.font.render(line, "white")
+            text_surface, _ = self.font.render(line, LIME_GREEN)
             self.screen.blit(text_surface, (self.rect.x + 5, y))
             y += self.font_size + 5
 
@@ -61,7 +68,11 @@ class TextField:
         return self.text
     
     def execute_command(self):
+        if self.text.endswith(EXECUTION_LINE):
+            return
+        
+        self.execution_script = self.text.split(EXECUTION_LINE)[-1]
         self.text += EXECUTION_LINE
         
-        print(self.text.replace(EXECUTION_LINE, "\n"))
-    
+    def save_image(self):    
+        self.screen.save()

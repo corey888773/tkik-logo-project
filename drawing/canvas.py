@@ -20,10 +20,9 @@ class Canvas:
 
     def nextFrame(self) -> None:
         # display the canvas on the screen
-        self.screen.blit(self.canvas, (0, 0))
-        self.canvas.fill(WHITE)
         for dot in self.points:
-            pygame.draw.circle(self.screen, dot.color, dot.position, dot.size)
+            pygame.draw.circle(self.canvas, dot.color, dot.position, dot.size)
+        self.screen.blit(self.canvas, (0, 0))
     
     def addDot(self, position: tuple, color: tuple, size=1.0) -> None:
         self.points.append(Dot(position, color, size))
@@ -38,7 +37,8 @@ class Canvas:
         folder = os.path.abspath(folder)
         filename = os.path.join(folder, filename)
         print(f"filename = {filename}")
-        pygame.image.save(self.screen, filename + '.png')
+        
+        pygame.image.save(self.canvas, filename + '.png')
         
     def get_size(self) -> tuple:
         return self.canvas.get_size()
