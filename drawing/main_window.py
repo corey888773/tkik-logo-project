@@ -2,6 +2,7 @@ import pygame
 import time
 from drawing.canvas import Canvas
 from drawing.vehicle import Vehicle
+from drawing.vehicle import Direction
 from drawing.text_field import TextField
 from drawing.execute_button import ExecuteButton
 from drawing.save_button import SaveButton
@@ -31,6 +32,11 @@ class MainWindow:
     def nextFrame(self, event=None) -> bool:
         self.screen.fill(self.default_color)
         self.canvas.nextFrame()
+
+        # Check if the turtle is going outside of the map
+        if self.vehicle.is_turtle_outside_map():
+            self.vehicle.change_direction(Direction.BACKWARD, 180)
+
         self.vehicle.nextFrame()
         self.text_field.draw()
         self.execute_button.draw()

@@ -27,6 +27,10 @@ class ExecuteButton:
                 if self.button_rect.collidepoint(pos):
                     self.text_field.execute_command()
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN and pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                self.text_field.execute_command()
+
     def draw(self):
         pygame.draw.rect(self.screen, self.button_color, self.button_rect, 0)
         button_text_surface, _ = self.button_font.render(self.button_text, BLACK)
