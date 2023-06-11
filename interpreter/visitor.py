@@ -1,4 +1,5 @@
 import time
+import pygame
 from dist.logo_grammarParser import logo_grammarParser
 from dist.logo_grammarVisitor import logo_grammarVisitor
 from drawing.vehicle import Direction
@@ -106,7 +107,12 @@ class Visitor(logo_grammarVisitor):
     def visitRepeat(self, ctx:logo_grammarParser.RepeatContext):
         # 'repeat' LICZBA blok
 
-        count = int(ctx.LICZBA().getText())
+        try:
+            count = int(ctx.LICZBA().getText())
+        except ValueError:
+            self.main_window.text_field.display_error_popup("Repeat number must be an integer.")
+            return
+
         self.logger.log(f"repeat {count}")
 
         for i in range(count):
@@ -131,7 +137,12 @@ class Visitor(logo_grammarVisitor):
     def visitForward(self, ctx:logo_grammarParser.ForwardContext):
         # 'fd' wyrazenie  | 'forward' wyrazenie
 
-        distance = self.visit(ctx.wyrazenie())
+        try:
+            distance = self.visit(ctx.wyrazenie())
+        except ValueError:
+            self.main_window.text_field.display_error_popup("Distance must be an integer.")
+            return
+
         self.log_common_move(ctx)
         self.main_window.vehicle.remaining_distance += distance
         self.main_window.vehicle.change_direction(Direction.FORWARD)
@@ -142,7 +153,12 @@ class Visitor(logo_grammarVisitor):
     def visitBackward(self, ctx:logo_grammarParser.BackwardContext):
 		# 'bk' wyrazenie | 'backward' wyrazenie
 
-        distance = self.visit(ctx.wyrazenie())
+        try:
+            distance = self.visit(ctx.wyrazenie())
+        except ValueError:
+            self.main_window.text_field.display_error_popup("Distance must be an integer.")
+            return
+
         self.log_common_move(ctx)
         self.main_window.vehicle.remaining_distance += distance
         self.main_window.vehicle.change_direction(Direction.BACKWARD)
@@ -154,7 +170,12 @@ class Visitor(logo_grammarVisitor):
     def visitRightturn(self, ctx:logo_grammarParser.RightturnContext):
 		# 'rt' wyrazenie  | 'rightturn' wyrazenie
 
-        degrees = self.visit(ctx.wyrazenie())
+        try:
+            degrees = self.visit(ctx.wyrazenie())
+        except ValueError:
+            self.main_window.text_field.display_error_popup("Degrees must be an integer.")
+            return
+
         self.log_common_move(ctx)
         self.main_window.vehicle.change_direction(Direction.RIGHT, degrees)
 
@@ -163,7 +184,12 @@ class Visitor(logo_grammarVisitor):
     def visitLeftturn(self, ctx:logo_grammarParser.LeftturnContext):
 		# 'lt' wyrazenie | 'leftturn' wyrazenie
 
-        degrees = self.visit(ctx.wyrazenie())
+        try:
+            degrees = self.visit(ctx.wyrazenie())
+        except ValueError:
+            self.main_window.text_field.display_error_popup("Degrees must be an integer.")
+            return
+
         self.log_common_move(ctx)
         self.main_window.vehicle.change_direction(Direction.LEFT, degrees)
 

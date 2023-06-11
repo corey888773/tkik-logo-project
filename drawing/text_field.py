@@ -56,6 +56,9 @@ class TextField:
             self.screen.blit(text_surface, (self.rect.x + 5, y))
             y += self.font_size + 5
 
+        cursor_pos = self.get_cursor_position()
+        pygame.draw.line(self.screen, LIME_GREEN, cursor_pos, (cursor_pos[0], cursor_pos[1] + self.font_size), 2)
+
     def scroll_up(self):
         if self.scroll_pos > 0:
             self.scroll_pos -= 1
@@ -63,7 +66,16 @@ class TextField:
     def scroll_down(self):
         if self.scroll_pos < len(self.text):
             self.scroll_pos += 1
-            
+
+    def get_cursor_position(self):
+        visible_lines = self.text.split('\n')[self.scroll_pos:]
+        y = self.rect.y + 5
+        for line in visible_lines[:-1]:
+            y += self.font_size + 5
+        last_line = visible_lines[-1]
+        cursor_x = self.rect.x + 5 + self.font.get_rect(last_line).width
+        return cursor_x, y
+
     def get_text(self):
         return self.text
     
@@ -76,3 +88,7 @@ class TextField:
         
     def save_image(self):    
         self.screen.save()
+
+    def display_error_popup(self, message):
+        self.text += "Error: " + message + "\n"
+        self.draw()
