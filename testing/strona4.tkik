@@ -1,0 +1,11 @@
+forward 40
+lt 90
+backward backward
+rt 90
+forward 40
+if (5+6*10 > 50) {
+    repeat 4 {
+        forward 40
+        rt 90
+    }
+}

@@ -11,11 +11,30 @@ from typing import Tuple
 
 from drawing.main_window import MainWindow
 
+class CustomErrorListener:
+    def __init__(self, text_field):
+        self.text_field = text_field
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        self.text_field.display_error_popup("Invalid syntax")
+
+    def reportAttemptingFullContext(self, *args):
+        pass
+
+    def reportAmbiguity(self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs):
+        pass
+
+    def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
+        pass
+
+
 def execute_script(script: str) -> None:
     data =  InputStream(script)
     lexer = logo_grammarLexer(data)
     stream = CommonTokenStream(lexer)
     parser = logo_grammarParser(stream)
+    parser.removeErrorListeners()
+    parser.addErrorListener(CustomErrorListener(main_window.text_field))
     tree = parser.program()
 
     _ = Visitor(logger, main_window).visit(tree)

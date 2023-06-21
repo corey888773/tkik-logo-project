@@ -31,14 +31,14 @@ class Canvas:
         self.points = []
         self.canvas.fill(WHITE)
 
-    def save(self, filename: str, folder: str = 'images') -> None:
+    def save(self, filepath: str) -> None:
+        folder = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/").rpartition('/')[0]
         if not os.path.exists(folder):
             os.makedirs(folder)
-        folder = os.path.abspath(folder)
-        filename = os.path.join(folder, filename)
-        print(f"filename = {filename}")
+        filepath = os.path.join(folder, "images", filepath.replace("\\", "/").rpartition('/')[2])
+        print(f"filename = {filepath}")
         
-        pygame.image.save(self.canvas, filename + '.png')
+        pygame.image.save(self.canvas, filepath + '.png')
         
     def get_size(self) -> tuple:
         return self.canvas.get_size()

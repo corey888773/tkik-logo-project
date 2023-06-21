@@ -1,0 +1,47 @@
+# Przykładowy program Logo
+
+# Ustawienie rozmiaru pisaka na 3
+setpensize 3
+
+# Powtarzamy 4 razy
+repeat 4 {
+    # Rysowanie kwadratu
+    forward 100
+    rightturn 90
+}
+
+# Czyszczenie ekranu
+clearscreen
+
+# Ustawienie rozmiaru pisaka na 1
+setpensize 1
+
+# Powtarzamy 36 razy
+repeat 36 {
+    # Rysowanie koła
+    forward 10
+    rightturn 10
+}
+
+# Przesunięcie do innego miejsca
+setxy 150 150
+
+# Powtarzamy 6 razy
+repeat 6 {
+    # Rysowanie trójkąta
+    forward 100
+    rightturn 120
+}
+
+# Ukrycie żółwia
+hideturtle
+
+# Powtarzamy 30 razy
+repeat 30 {
+    # Rysowanie koła
+    forward 10
+    rightturn 15
+}
+
+# Wyświetlenie żółwia
+showturtle

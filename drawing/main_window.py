@@ -36,7 +36,7 @@ class MainWindow:
         # Check if the turtle is going outside of the map
         if self.vehicle.is_turtle_outside_map():
             self.vehicle.change_direction(Direction.BACKWARD, 180)
-
+            
         self.vehicle.nextFrame()
         self.text_field.draw()
         self.execute_button.draw()
@@ -71,5 +71,7 @@ class MainWindow:
         self.vehicle.is_turtle_visible = False
         self.run_frames(1)
         self.canvas.save(self.outfile)
+        self.vehicle.is_turtle_visible = True
+        self.run_frames(1)
 
         

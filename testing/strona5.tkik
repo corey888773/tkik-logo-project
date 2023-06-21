@@ -1,0 +1,8 @@
+if (4 > 2) {
+    fd 40
+    rt 70
+    fd 40
+    rt 70
+    bd 40
+}
+fd fewfacvgavac

@@ -79,10 +79,9 @@ class Vehicle:
     def is_turtle_outside_map(self) -> bool:
         map_width, map_height = self.screen_size
         turtle_x, turtle_y = self.get_center_position()
-        turtle_width, turtle_height = self.img_size
 
         return (
-                turtle_x < 0 or turtle_x + turtle_width > map_width
-                or turtle_y < 0 or turtle_y + turtle_height > map_height
+                turtle_x < 0 or turtle_x > map_width
+                or turtle_y < 0 or turtle_y > map_height
         )
 
